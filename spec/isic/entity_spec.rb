@@ -97,11 +97,17 @@ describe Isic::Entity do
       Isic::Entity.new("0893"),
       Isic::Entity.new("0899")
     ] }
+    let(:new_section) { Isic::Entity.new('U') }
+    let(:all_divisions_of_new_section) { [ Isic::Entity.new('99') ] }
+    let(:new_division) { Isic::Entity.new('99') }
+    let(:all_groups_of_new_division) { [ Isic::Entity.new('990') ] }
 
     context 'in English' do
       
       it "can list all subcategories of the current level" do
         expect(new_group.subcategories).to eq all_classes_of_new_group
+        expect(new_section.subcategories).to eq all_divisions_of_new_section
+        expect(new_division.subcategories).to eq all_groups_of_new_division
       end
       
     end

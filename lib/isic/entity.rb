@@ -22,7 +22,7 @@ class Isic
     def subcategories(options = {})
       translation = options[:translation] || :en
       return [] if @code.length > 3
-      searches = (level == :section) ? DIVISIONS[@code].collect{|n| /#{n}\d/} : [ /#{@code}\d/ ]
+      searches = (level == :section) ? DIVISIONS[@code].collect{|n| "#{n}"} : [ "#{@code}\\d" ]
       hashes = searches.inject([]) do |entities, search|
         entities + Search.new( search, translation: translation ).all
       end
