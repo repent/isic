@@ -1,5 +1,7 @@
 class Isic
   class Entity
+  
+    attr_reader :code
 
     def initialize(code)
       @code = code
@@ -11,6 +13,24 @@ class Isic
         hash[key] = Isic::Search.new(value, translation: translation).first
         hash
       end
+    end
+    
+    def level
+      [ :section, :division, :group, :class ][@code.length-1]
+    end
+    
+    def subcategories(options = {})
+      translation = options[:translation] || :en
+      return [] if @code.length > 3
+      searches = (level == :section) ? DIVISIONS[@code].collect{|n| /#{n}\d/} : [ /#{@code}\d/ ]
+      hashes = searches.inject([]) do |entities, search|
+        entities + Search.new( search, translation: translation ).all
+      end
+      hashes.collect{|e| Entity.new(e[:code])}
+    end
+    
+    def ==(other)
+      @code == other.code
     end
 
     private

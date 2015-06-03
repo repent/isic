@@ -40,7 +40,7 @@ describe Isic::Entity do
                                                :section => {:code => "B", :description => "Mining and quarrying"}
                                              })
       end
-
+      
     end
 
     context 'in spanish' do
@@ -74,5 +74,45 @@ describe Isic::Entity do
     end
 
   end
+  
+  describe '#level' do
+    let(:new_group) { Isic::Entity.new('089') }
+    let(:all_classes_of_new_group) { [
+      Isic::Entity.new("0891").classify,
+      Isic::Entity.new("0892").classify,
+      Isic::Entity.new("0893").classify,
+      Isic::Entity.new("0899").classify
+    ] }
 
+    it "type gives the hierarchical level" do
+      expect(new_group.level).to eq :group
+    end
+  end
+  
+  describe '#subcategories' do
+    let(:new_group) { Isic::Entity.new('089') }
+    let(:all_classes_of_new_group) { [
+      Isic::Entity.new("0891"),
+      Isic::Entity.new("0892"),
+      Isic::Entity.new("0893"),
+      Isic::Entity.new("0899")
+    ] }
+
+    context 'in English' do
+      
+      it "can list all subcategories of the current level" do
+        expect(new_group.subcategories).to eq all_classes_of_new_group
+      end
+      
+    end
+  end
+  
+  describe '#==' do
+    let(:new_group) { Isic::Entity.new('089') }
+    let(:the_same_new_group) { Isic::Entity.new('089') }
+
+    it "can determine if two entities share the same code" do
+      expect(new_group).to eq the_same_new_group
+    end
+  end
 end
