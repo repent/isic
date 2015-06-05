@@ -94,17 +94,33 @@ describe Isic::Entity do
   describe '#subcategories' do
     let(:new_group) { Isic::Entity.new('089') }
     let(:nil_entity) { Isic::Entity.new(nil) }
-    let(:all_classes_of_new_group) { [
-      Isic::Entity.new("0891"),
-      Isic::Entity.new("0892"),
-      Isic::Entity.new("0893"),
-      Isic::Entity.new("0899")
-    ] }
-    let(:new_section) { Isic::Entity.new('U') }
-    let(:all_divisions_of_new_section) { [ Isic::Entity.new('99') ] }
-    let(:new_division) { Isic::Entity.new('99') }
-    let(:all_groups_of_new_division) { [ Isic::Entity.new('990') ] }
+    #let(:all_classes_of_new_group) { [
+    #  Isic::Entity.new("0891"),
+    #  Isic::Entity.new("0892"),
+    #  Isic::Entity.new("0893"),
+    #  Isic::Entity.new("0899")
+    #] }
+    #let(:new_section) { Isic::Entity.new('U') }
+    #let(:all_divisions_of_new_section) { [ Isic::Entity.new('99') ] }
+    #let(:new_division) { Isic::Entity.new('99') }
+    #let(:all_groups_of_new_division) { [ Isic::Entity.new('990') ] }
 
+    let(:all_classes_of_new_group) {
+      [ {:code=>"0891", :description=>"Mining of chemical and fertilizer minerals"},
+        {:code=>"0892", :description=>"Extraction of peat"},
+        {:code=>"0893", :description=>"Extraction of salt"},
+        {:code=>"0899", :description=>"Other mining and quarrying n.e.c."}
+      ]
+    }
+    let(:new_section) { Isic::Entity.new('U') }
+    let(:all_divisions_of_new_section) {
+      [{:code=>"99", :description=>"Activities of extraterritorial organizations and bodies"}]
+    }
+    let(:new_division) { Isic::Entity.new('99') }
+    let(:all_groups_of_new_division) {
+      [{:code=>"990", :description=>"Activities of extraterritorial organizations and bodies"}]
+    }
+    
     #context 'in English' do
       
       it "can list all subcategories of the current level" do

@@ -22,14 +22,15 @@ class Isic
     
     def subcategories() # options = {})
       #translation = options[:translation] || :en
-      #binding.pry
+      # returns an array of hashes containing :code and :description
       return Isic::sections if !@code || @code.empty?
       return [] if @code.length > 3
       searches = (level == :section) ? DIVISIONS[@code].collect{|n| "#{n}"} : [ "#{@code}\\d" ]
       hashes = searches.inject([]) do |entities, search|
         entities + Search.new( search ).all
       end
-      hashes.collect{|e| Entity.new(e[:code])}
+      # Convert hashes to Entities:
+      #hashes.collect{|e| Entity.new(e[:code])}
     end
     
     def ==(other)
