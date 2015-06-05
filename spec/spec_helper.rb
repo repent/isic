@@ -1,5 +1,6 @@
 require 'simplecov'
 require 'coveralls'
+require 'pry'
 
 SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter, Coveralls::SimpleCov::Formatter]
 

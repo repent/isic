@@ -77,6 +77,7 @@ describe Isic::Entity do
   
   describe '#level' do
     let(:new_group) { Isic::Entity.new('089') }
+    let(:nil_entity) { Isic::Entity.new(nil) }
     let(:all_classes_of_new_group) { [
       Isic::Entity.new("0891").classify,
       Isic::Entity.new("0892").classify,
@@ -86,11 +87,13 @@ describe Isic::Entity do
 
     it "type gives the hierarchical level" do
       expect(new_group.level).to eq :group
+      expect(nil_entity.level).to eq :none
     end
   end
   
   describe '#subcategories' do
     let(:new_group) { Isic::Entity.new('089') }
+    let(:nil_entity) { Isic::Entity.new(nil) }
     let(:all_classes_of_new_group) { [
       Isic::Entity.new("0891"),
       Isic::Entity.new("0892"),
@@ -102,15 +105,16 @@ describe Isic::Entity do
     let(:new_division) { Isic::Entity.new('99') }
     let(:all_groups_of_new_division) { [ Isic::Entity.new('990') ] }
 
-    context 'in English' do
+    #context 'in English' do
       
       it "can list all subcategories of the current level" do
         expect(new_group.subcategories).to eq all_classes_of_new_group
         expect(new_section.subcategories).to eq all_divisions_of_new_section
         expect(new_division.subcategories).to eq all_groups_of_new_division
+        expect(nil_entity.subcategories).to eq Isic::sections
       end
       
-    end
+    #end
   end
   
   describe '#==' do
@@ -119,6 +123,34 @@ describe Isic::Entity do
 
     it "can determine if two entities share the same code" do
       expect(new_group).to eq the_same_new_group
+    end
+  end
+  
+  describe '#exists?' do
+    real = Isic::Entity.new('089')
+    fake = Isic::Entity.new('995')
+    
+    it "can tell whether the given code exists in the ISIC definition" do
+      expect(real.exists?).to eq true
+      expect(fake.exists?).to eq false
+    end
+  end
+  
+  describe '#description' do
+    let(:klass)    { Isic::Entity.new("0891") }
+    let(:group)    { Isic::Entity.new("089") }
+    let(:division) { Isic::Entity.new("08") }
+    let(:section)  { Isic::Entity.new("B") }
+    let(:nil_entity)  { Isic::Entity.new(nil) }
+    
+    context 'in English' do
+      it "provides the lowest level description of an Entity" do
+        expect(section.description).to eq  "Mining and quarrying"
+        expect(division.description).to eq "Other mining and quarrying"
+        expect(group.description).to eq    "Mining and quarrying n.e.c."
+        expect(klass.description).to eq    "Mining of chemical and fertilizer minerals"
+        expect(nil_entity.description).to eq ""
+      end
     end
   end
 end

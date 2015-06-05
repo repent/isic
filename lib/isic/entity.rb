@@ -16,21 +16,36 @@ class Isic
     end
     
     def level
-      [ :section, :division, :group, :class ][@code.length-1]
+      code = @code || ''
+      [ :none, :section, :division, :group, :class ][code.length]
     end
     
-    def subcategories(options = {})
-      translation = options[:translation] || :en
+    def subcategories() # options = {})
+      #translation = options[:translation] || :en
+      #binding.pry
+      return Isic::sections if !@code || @code.empty?
       return [] if @code.length > 3
       searches = (level == :section) ? DIVISIONS[@code].collect{|n| "#{n}"} : [ "#{@code}\\d" ]
       hashes = searches.inject([]) do |entities, search|
-        entities + Search.new( search, translation: translation ).all
+        entities + Search.new( search ).all
       end
       hashes.collect{|e| Entity.new(e[:code])}
     end
     
     def ==(other)
+      return false unless other.class == Isic::Entity
       @code == other.code
+    end
+    
+    def exists?
+      Isic::Search.new(@code).first.class == Hash
+    end
+    
+    def description(options = {})
+      translation = options[:translation] || :en
+      raise "Don't speak #{translation}!" unless translation == :en
+      result = Isic::Search.new(@code).first
+      result ? result[:description] : ''
     end
 
     private
