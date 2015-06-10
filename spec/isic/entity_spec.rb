@@ -92,36 +92,25 @@ describe Isic::Entity do
   end
   
   describe '#subcategories' do
-    let(:new_group) { Isic::Entity.new('089') }
-    let(:nil_entity) { Isic::Entity.new(nil) }
-    #let(:all_classes_of_new_group) { [
-    #  Isic::Entity.new("0891"),
-    #  Isic::Entity.new("0892"),
-    #  Isic::Entity.new("0893"),
-    #  Isic::Entity.new("0899")
-    #] }
-    #let(:new_section) { Isic::Entity.new('U') }
-    #let(:all_divisions_of_new_section) { [ Isic::Entity.new('99') ] }
-    #let(:new_division) { Isic::Entity.new('99') }
-    #let(:all_groups_of_new_division) { [ Isic::Entity.new('990') ] }
-
-    let(:all_classes_of_new_group) {
-      [ {:code=>"0891", :description=>"Mining of chemical and fertilizer minerals"},
-        {:code=>"0892", :description=>"Extraction of peat"},
-        {:code=>"0893", :description=>"Extraction of salt"},
-        {:code=>"0899", :description=>"Other mining and quarrying n.e.c."}
-      ]
-    }
-    let(:new_section) { Isic::Entity.new('U') }
-    let(:all_divisions_of_new_section) {
-      [{:code=>"99", :description=>"Activities of extraterritorial organizations and bodies"}]
-    }
-    let(:new_division) { Isic::Entity.new('99') }
-    let(:all_groups_of_new_division) {
-      [{:code=>"990", :description=>"Activities of extraterritorial organizations and bodies"}]
-    }
     
-    #context 'in English' do
+    context 'in English' do
+      let(:new_group) { Isic::Entity.new('089') }
+      let(:nil_entity) { Isic::Entity.new(nil) }
+      let(:all_classes_of_new_group) {
+        [ {:code=>"0891", :description=>"Mining of chemical and fertilizer minerals"},
+          {:code=>"0892", :description=>"Extraction of peat"},
+          {:code=>"0893", :description=>"Extraction of salt"},
+          {:code=>"0899", :description=>"Other mining and quarrying n.e.c."}
+        ]
+      }
+      let(:new_section) { Isic::Entity.new('U') }
+      let(:all_divisions_of_new_section) {
+        [{:code=>"99", :description=>"Activities of extraterritorial organizations and bodies"}]
+      }
+      let(:new_division) { Isic::Entity.new('99') }
+      let(:all_groups_of_new_division) {
+        [{:code=>"990", :description=>"Activities of extraterritorial organizations and bodies"}]
+      }
       
       it "can list all subcategories of the current level" do
         expect(new_group.subcategories).to eq all_classes_of_new_group
@@ -130,7 +119,65 @@ describe Isic::Entity do
         expect(nil_entity.subcategories).to eq Isic::sections
       end
       
-    #end
+    end
+    context 'in French' do
+      
+      let(:new_group) { Isic::Entity.new('089') }
+      let(:nil_entity) { Isic::Entity.new(nil) }
+      let(:all_classes_of_new_group) {
+        [
+          {code: "0891", description: "Extraction de minerais pour l'industrie chimique et d'engrais naturels"},
+          {code: "0892", description: "Extraction de tourbe"},
+          {code: "0893", description: "Extraction de sel"},
+          {code: "0899", description: "Autres activités extractives, n.c.a."}
+        ]
+      }
+      let(:new_section) { Isic::Entity.new('U') }
+      let(:all_divisions_of_new_section) {
+        [{:code=>"99", :description=>"Activités des organisations et organismes extra-territoriaux"}]
+      }
+      let(:new_division) { Isic::Entity.new('99') }
+      let(:all_groups_of_new_division) {
+        [{:code=>"990", :description=>"Activités des organisations et organismes extra-territoriaux"}]
+      }
+
+      it "can list all subcategories of the current level" do
+        expect(new_group.subcategories(translation: :fr)).to eq all_classes_of_new_group
+        expect(new_section.subcategories(translation: :fr)).to eq all_divisions_of_new_section
+        expect(new_division.subcategories(translation: :fr)).to eq all_groups_of_new_division
+        expect(nil_entity.subcategories(translation: :fr)).to eq Isic::sections(translation: :fr)
+      end
+      
+    end
+    context 'in Spanish' do
+      
+      let(:new_group) { Isic::Entity.new('089') }
+      let(:nil_entity) { Isic::Entity.new(nil) }
+      let(:all_classes_of_new_group) {
+        [
+          {code: "0891", description: "Extracción de minerales para la fabricación de abonos y productos químicos"},
+          {code: "0892", description: "Extracción de turba"},
+          {code: "0893", description: "Extracción de sal"},
+          {code: "0899", description: "Explotación de otras minas y canteras n.c.p."}
+        ]
+      }
+      let(:new_section) { Isic::Entity.new('U') }
+      let(:all_divisions_of_new_section) {
+        [{:code=>"99", :description=>"Actividades de organizaciones y órganos extraterritoriales"}]
+      }
+      let(:new_division) { Isic::Entity.new('99') }
+      let(:all_groups_of_new_division) {
+        [{:code=>"990", :description=>"Actividades de organizaciones y órganos extraterritoriales"}]
+      }
+      
+      it "can list all subcategories of the current level" do
+        expect(new_group.subcategories(translation: :es)).to eq all_classes_of_new_group
+        expect(new_section.subcategories(translation: :es)).to eq all_divisions_of_new_section
+        expect(new_division.subcategories(translation: :es)).to eq all_groups_of_new_division
+        expect(nil_entity.subcategories(translation: :es)).to eq Isic::sections(translation: :es)
+      end
+      
+    end
   end
   
   describe '#==' do
@@ -168,5 +215,25 @@ describe Isic::Entity do
         expect(nil_entity.description).to eq ""
       end
     end
+    
+    context 'in French' do
+      it "provides the lowest level description of an Entity" do
+        expect(section.description(translation: :fr)).to eq  "Activités extractives"
+        expect(division.description(translation: :fr)).to eq "Autres activités extractives"
+        expect(group.description(translation: :fr)).to eq    "Activités extractives, n.c.a."
+        expect(klass.description(translation: :fr)).to eq    "Extraction de minerais pour l'industrie chimique et d'engrais naturels"
+        expect(nil_entity.description(translation: :fr)).to eq ""
+      end
+    end
+
+    context 'in Spanish' do
+      it "provides the lowest level description of an Entity" do
+        expect(section.description(translation: :es)).to eq  "Explotación de minas y canteras"
+        expect(division.description(translation: :es)).to eq "Explotación de otras minas y canteras"
+        expect(group.description(translation: :es)).to eq    "Explotación de minas y canteras n.c.p."
+        expect(klass.description(translation: :es)).to eq    "Extracción de minerales para la fabricación de abonos y productos químicos"
+        expect(nil_entity.description(translation: :es)).to eq ""
+      end
+    end    
   end
 end

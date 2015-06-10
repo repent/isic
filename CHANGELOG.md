@@ -1,5 +1,12 @@
 # Change Log
 
+### Added
+- Entity#level
+- Entity#subcategories
+- Entity#==
+- Entity#exists?
+- Entity#description
+
 ## [1.0.5] - 2015-05-21
 
 ### Added

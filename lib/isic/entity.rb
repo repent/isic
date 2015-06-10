@@ -20,17 +20,15 @@ class Isic
       [ :none, :section, :division, :group, :class ][code.length]
     end
     
-    def subcategories() # options = {})
-      #translation = options[:translation] || :en
-      # returns an array of hashes containing :code and :description
-      return Isic::sections if !@code || @code.empty?
+    # returns an array of hashes containing :code and :description
+    def subcategories( options = {} )
+      translation = options[:translation] || :en
+      return Isic::sections( translation: translation ) if !@code || @code.empty?
       return [] if @code.length > 3
       searches = (level == :section) ? DIVISIONS[@code].collect{|n| "#{n}"} : [ "#{@code}\\d" ]
       hashes = searches.inject([]) do |entities, search|
-        entities + Search.new( search ).all
+        entities + Search.new( search, translation: translation ).all
       end
-      # Convert hashes to Entities:
-      #hashes.collect{|e| Entity.new(e[:code])}
     end
     
     def ==(other)
@@ -44,8 +42,7 @@ class Isic
     
     def description(options = {})
       translation = options[:translation] || :en
-      raise "Don't speak #{translation}!" unless translation == :en
-      result = Isic::Search.new(@code).first
+      result = Isic::Search.new(@code, options).first
       result ? result[:description] : ''
     end
 
