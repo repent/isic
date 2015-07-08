@@ -234,6 +234,40 @@ describe Isic::Entity do
         expect(klass.description(translation: :es)).to eq    "Extracción de minerales para la fabricación de abonos y productos químicos"
         expect(nil_entity.description(translation: :es)).to eq ""
       end
-    end    
+    end
+  end
+  
+  describe 'explanatory_link' do
+    let(:klass)    { Isic::Entity.new("0891") }
+    let(:group)    { Isic::Entity.new("089") }
+    let(:division) { Isic::Entity.new("08") }
+    let(:section)  { Isic::Entity.new("B") }
+    
+    url = 'http://unstats.un.org/unsd/cr/registry/regcs.asp?Cl=27&Lg=1&Co='
+    #url_fr = 'http://unstats.un.org/unsd/cr/registry/regcs.asp?Cl=27&Lg=1&Co='
+    #url_es = 'http://unstats.un.org/unsd/cr/registry/regcs.asp?Cl=27&Lg=1&Co='
+
+    context 'in English' do
+      it "yields a hyperlink to an explanation of its own category" do
+        [ klass, group, division, section ].each do |entity|
+          expect(entity.explanatory_link).to eq "#{url}#{entity.code}"
+        end
+      end
+    end
+    # As of July 2015 these pages don't seem to exist in other languages
+    #context 'in French' do
+    #  it "yields a hyperlink to an explanation of its own category" do
+    #    [ klass, group, division, section ].each do |entity|
+    #      expect(entity.explanatory_link).to eq "#{url_fr}#{entity.code}"
+    #    end
+    #  end
+    #end
+    #context 'in Spanish' do
+    #  it "yields a hyperlink to an explanation of its own category" do
+    #    [ klass, group, division, section ].each do |entity|
+    #      expect(entity.explanatory_link).to eq "#{url_es}#{entity.code}"
+    #    end
+    #  end
+    #end
   end
 end

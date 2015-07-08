@@ -1,4 +1,10 @@
 class Isic
+  LANG_CODE = {
+    en: 1,
+    fr: 2,
+    es: 3
+  }
+
   class Entity
   
     attr_reader :code
@@ -44,6 +50,11 @@ class Isic
       translation = options[:translation] || :en
       result = Isic::Search.new(@code, options).first
       result ? result[:description] : ''
+    end
+    
+    def explanatory_link(options = {})
+      translation = options[:translation] || :en
+      "http://unstats.un.org/unsd/cr/registry/regcs.asp?Cl=27&Lg=#{Isic::LANG_CODE[translation]}&Co=#{@code}"
     end
 
     private
