@@ -48,13 +48,18 @@ class Isic
     
     def description(options = {})
       translation = options[:translation] || :en
+      #html = options[:html] || false
       result = Isic::Search.new(@code, options).first
       result ? result[:description] : ''
     end
     
     def explanatory_link(options = {})
       translation = options[:translation] || :en
-      "http://unstats.un.org/unsd/cr/registry/regcs.asp?Cl=27&Lg=#{Isic::LANG_CODE[translation]}&Co=#{@code}"
+      if @code
+        "http://unstats.un.org/unsd/cr/registry/regcs.asp?Cl=27&Lg=#{Isic::LANG_CODE[translation]}&Co=#{@code}"
+      else
+        'http://unstats.un.org/unsd/cr/registry/regcs.asp?Cl=27'
+      end
     end
 
     private
